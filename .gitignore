@@ -1,0 +1,15 @@
+# ROS build and devel folders (NEVER commit these)
+build/
+devel/
+logs/
+.catkin_workspace
+
+# Python/Compiled files
+__pycache__/
+*.pyc
+
+# Local IDE settings
+.vscode/
+.idea/
+# Other files to ignore
+src/roboticsgroup_upatras_gazebo_plugins/

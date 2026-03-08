@@ -1,0 +1,12 @@
+# Ignore python compiled files
+__pycache__/
+*.pyc
+
+# Ignore local build artifacts
+build/
+devel/
+logs/
+
+# Ignore user-specific settings
+.vscode/
+.idea/
