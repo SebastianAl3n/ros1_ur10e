@@ -6,17 +6,25 @@
     <arg name="gui" value="true"/>
   </include>
 
+  <!-- Load urdf on the parameter server -->
   <arg name="path" default="$(find ur10e_sim)/urdf/ur10e_workarea.urdf.xacro" />
   <param name="robot_description" command="$(find xacro)/xacro '$(arg path)'" />
 
   <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" 
-        args="-urdf -param robot_description -model robot -z 0.1" respawn="false" output="screen" />
+        args="-urdf -param robot_description -model robot -z 0.0" respawn="false" output="screen" />
+  
+  <!--controller configuration-->
+  <arg name="controller_config_file" default="$(find ur10e_sim)/config/ur_controllers.yaml" doc="Config file used for defining the ROS-Control controllers."/>
+  <arg name="controllers" default="ur10e/joint_state_controller ur10e/arm_controller" doc="Controllers that are activated by default."/>
+  <arg name="stopped_controllers" default="" doc="Controllers that are initally loaded, but not started."/>
 
-  <rosparam file="$(find ur10e_moveit_config)/config/ros_controllers.yaml" command="load"/>
-
+  <rosparam file="$(arg controller_config_file)" command="load"/>
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
-        output="screen" args="manipulator_controller gripper_controller joint_state_controller"/>
+        output="screen" args="$(arg controllers)"/>
 
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen" >
+    <remap from="joint_states" to="/ur10e/joint_states" />
+  </node>
+
 
 </launch>
