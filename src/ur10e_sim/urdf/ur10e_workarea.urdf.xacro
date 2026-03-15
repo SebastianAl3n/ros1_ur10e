@@ -3,10 +3,12 @@
 
   <xacro:include filename="$(find ur_description)/urdf/inc/ur_macro.xacro"/>
   <xacro:include filename="$(find onrobot_rg_description)/urdf/onrobot_rg2_model_macro.xacro" />
+  <xacro:include filename="$(find ur10e_sim)/urdf/table.urdf.xacro" />
+
 
   <link name="world"/>
 
-  <link name="table">
+  <link name="floor_plate">
     <visual>
       <geometry>
         <box size="1.0 1.0 0.1"/>
@@ -27,9 +29,9 @@
     </inertial>
   </link>
 
-  <joint name="world_to_table" type="fixed">
+  <joint name="world_to_floor_plate" type="fixed">
     <parent link="world"/>
-    <child link="table"/>
+    <child link="floor_plate"/>
     <origin xyz="0 0 0.05" rpy="0 0 0"/>
   </joint>
 
@@ -42,7 +44,7 @@
     visual_parameters_file="$(find ur_description)/config/ur10e/visual_parameters.yaml"
   />
   <joint name="table_to_robot" type="fixed">
-    <parent link="table"/>
+    <parent link="floor_plate"/>
     <child link="base_link"/> <origin xyz="0 0 0.05" rpy="0 0 0"/> 
   </joint>
 
@@ -62,6 +64,21 @@
     <child link="gripper_tcp"/> 
     <origin xyz="0 0 0.15" rpy="0 0 0"/>
   </joint>
+
+  <xacro:wooden_table prefix="right_"/>
+  <joint name="right_table_attachment" type="fixed">
+    <parent link="world"/> 
+    <child link="right_table_base_link"/> 
+    <origin xyz="0 1 0" rpy="0 0 0"/>
+  </joint>
+
+  <xacro:wooden_table prefix="left_"/>
+  <joint name="left_table_attachment" type="fixed">
+    <parent link="world"/> 
+    <child link="left_table_base_link"/> 
+    <origin xyz="0 -1 0" rpy="0 0 0"/>
+  </joint>
+
   
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">

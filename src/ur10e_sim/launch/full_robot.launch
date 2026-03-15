@@ -23,6 +23,12 @@
         output="screen" args="$(arg controllers)"/>
 
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen" />
+ 
+ <!--spawn object for pick and place-->
+ <param name="can_description" command="$(find xacro)/xacro '$(find ur10e_sim)/urdf/coke_can.urdf.xacro'" />
 
+<node name="spawn_cola_can" pkg="gazebo_ros" type="spawn_model" 
+      args="-urdf -param can_description -model cola_dose -x 0.0 -y -1.0 -z 0.75" 
+      respawn="false" output="screen" />
 
 </launch>

@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="table">
+  
+  <material name="wood">
+    <color rgba="0.55 0.35 0.15 1.0"/>
+  </material>
+
+<xacro:macro name="wooden_table" params="prefix">
+
+<xacro:property name="table_height" value="0.7" />
+    <xacro:property name="table_width" value="1.0" />
+    <xacro:property name="table_depth" value="0.8" />
+    <xacro:property name="leg_radius" value="0.02" />
+    <xacro:property name="top_thickness" value="0.04" />
+
+    <link name="${prefix}table_base_link"/>
+
+    <joint name="${prefix}base_to_top" type="fixed">
+      <parent link="${prefix}table_base_link"/>
+      <child link="${prefix}table_top"/>
+      <origin xyz="0 0 ${table_height}" rpy="0 0 0"/>
+    </joint>
+
+    <link name="${prefix}table_top">
+      <visual>
+        <geometry><box size="${table_width} ${table_depth} ${top_thickness}"/></geometry>
+        <material name="wood"/>
+      </visual>
+      <collision>
+        <geometry><box size="${table_width} ${table_depth} ${top_thickness}"/></geometry>
+      </collision>
+      <inertial>
+        <mass value="5.0"/>
+        <inertia ixx="0.1" ixy="0" ixz="0" iyy="0.1" iyz="0" izz="0.1"/>
+      </inertial>
+    </link>
+
+    <xacro:macro name="table_leg" params="leg_suffix x y">
+      <joint name="${prefix}${leg_suffix}_leg_joint" type="fixed">
+        <parent link="${prefix}table_top"/>
+        <child link="${prefix}${leg_suffix}_leg"/>
+        <origin xyz="${x} ${y} ${-(table_height/2)}" rpy="0 0 0"/>
+      </joint>
+      <link name="${prefix}${leg_suffix}_leg">
+        <visual>
+          <geometry><cylinder radius="${leg_radius}" length="${table_height}"/></geometry>
+          <material name="wood"/>
+        </visual>
+        <collision>
+          <geometry><cylinder radius="${leg_radius}" length="${table_height}"/></geometry>
+        </collision>
+      </link>
+    </xacro:macro>
+
+    <xacro:table_leg leg_suffix="front_left"  x="${table_width/2 - 0.05}" y="${table_depth/2 - 0.05}" />
+    <xacro:table_leg leg_suffix="front_right" x="${table_width/2 - 0.05}" y="${-table_depth/2 + 0.05}" />
+    <xacro:table_leg leg_suffix="back_left"   x="${-table_width/2 + 0.05}" y="${table_depth/2 - 0.05}" />
+    <xacro:table_leg leg_suffix="back_right"  x="${-table_width/2 + 0.05}" y="${-table_depth/2 + 0.05}" />
+
+    <gazebo reference="${prefix}table_top">
+      <material>Gazebo/Wood</material>
+      <mu1>1.0</mu1>
+      <mu2>1.0</mu2>
+    </gazebo>
+
+</xacro:macro>
+</robot>
