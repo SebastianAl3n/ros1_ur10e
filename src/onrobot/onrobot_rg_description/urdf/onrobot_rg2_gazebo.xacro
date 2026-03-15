@@ -1,13 +1,12 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:macro name="onrobot_rg2_gazebo" params="prefix">
-    <gazebo>
+    <!--gazebo>
       <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
         <robotNamespace>/onrobot_rg2</robotNamespace>
         <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
       </plugin> 
-    </gazebo>
-
+    </gazebo-->
     <gazebo>
       <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="mimic_${prefix}left_inner_knuckle_joint">
         <joint>${prefix}finger_joint</joint>
