@@ -5,3 +5,4 @@ robot_planning:
   goal_joint_tolerance: 0.0001
   goal_position_tolerance: 0.0001
   goal_orientation_tolerance: 0.001
+

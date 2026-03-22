@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="simple_cube">
+
+  <xacro:arg name="name" default="cube"/>
+  <xacro:arg name="size" default="0.1"/>
+  <xacro:arg name="mass" default="1.0"/>
+
+  <link name="$(arg name)_link">
+    <inertial>
+      <mass value="$(arg mass)" />
+      <inertia ixx="${(1/6)*$(arg mass)*$(arg size)*$(arg size)}" ixy="0" ixz="0" 
+               iyy="${(1/6)*$(arg mass)*$(arg size)*$(arg size)}" iyz="0" 
+               izz="${(1/6)*$(arg mass)*$(arg size)*$(arg size)}" />
+    </inertial>
+    <visual>
+      <geometry><box size="$(arg size) $(arg size) $(arg size)" /></geometry>
+    </visual>
+    <collision>
+      <geometry><box size="$(arg size) $(arg size) $(arg size)" /></geometry>
+    </collision>
+  </link>
+</robot>

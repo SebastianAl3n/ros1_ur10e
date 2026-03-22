@@ -8,7 +8,7 @@
 <xacro:macro name="wooden_table" params="prefix">
 
 <xacro:property name="table_height" value="0.7" />
-    <xacro:property name="table_width" value="1.0" />
+    <xacro:property name="table_width" value="2.0" />
     <xacro:property name="table_depth" value="0.8" />
     <xacro:property name="leg_radius" value="0.02" />
     <xacro:property name="top_thickness" value="0.04" />
