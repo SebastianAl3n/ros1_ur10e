@@ -4,6 +4,8 @@
   <xacro:include filename="$(find ur_description)/urdf/inc/ur_macro.xacro"/>
   <xacro:include filename="$(find onrobot_rg_description)/urdf/onrobot_rg2_model_macro.xacro" />
   <xacro:include filename="$(find ur10e_sim)/urdf/table.urdf.xacro" />
+  <xacro:include filename="$(find ur10e_sim)/urdf/tool_adapter_plate.xacro" />
+  <xacro:include filename= "$(find ur10e_sim)/urdf/FT_sensor_urdf/net_ft_sensor_macro.urdf.xacro" />
 
 
   <link name="world"/>
@@ -52,9 +54,17 @@
     <preserveFixedJoint>true</preserveFixedJoint>
   </gazebo>
 
+  <xacro:adapter_plate parent="tool0" prefix="">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:adapter_plate>
+
+  <xacro:net_ft_sensor parent="adapter_plate_socket" prefix="">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:net_ft_sensor>
+
   <xacro:onrobot_rg2 prefix=""/>
   <joint name="gripper_attachment" type="fixed">
-  <parent link="tool0"/> <child link="onrobot_rg2_base_link"/> 
+  <parent link="tool_mount_link"/> <child link="onrobot_rg2_base_link"/> 
   <origin xyz="0 0 0" rpy="0 0 1.5708"/>
   </joint>
 

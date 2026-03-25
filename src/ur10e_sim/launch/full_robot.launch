@@ -28,25 +28,25 @@
  <!--param name="can_description" command="$(find xacro)/xacro '$(find ur10e_sim)/urdf/coke_can.urdf.xacro'" /-->
 
 <!--node name="spawn_cola_can" pkg="gazebo_ros" type="spawn_model" 
-      args="-urdf -param can_description -model cola_dose -x 0.0 -y -1.0 -z 0.75" 
+      args="-urdf -param can_description -model cola_dose -x 0.0 -y -1.0 -z 0.755" 
       respawn="false" output="screen" /-->
 
 <!--param name="Cubes"  command="$(find xacro)/xacro '$(find ur10e_sim)/urdf/cube_spawner.urdf.xacro'" />
 <param name="cube_large_description" 
        command="$(find xacro)/xacro '$(find ur10e_sim)/urdf/cube_spawner.urdf.xacro' name:=large_cube size:=0.10 mass:=0.5" />
 <node name="spawn_large_cube" pkg="gazebo_ros" type="spawn_model" 
-      args="-urdf -param cube_large_description -model large_cube -x 0.0 -y -1.0 -z 0.75" 
+      args="-urdf -param cube_large_description -model large_cube -x 0.0 -y -1.0 -z 0.755" 
       launch-prefix="bash -c 'sleep 5.0; $0 $@' "/>
 
 <param name="cube_med_description" 
        command="$(find xacro)/xacro '$(find ur10e_sim)/urdf/cube_spawner.urdf.xacro' name:=med_cube size:=0.07 mass:=0.3" />
 <node name="spawn_med_cube" pkg="gazebo_ros" type="spawn_model" 
-      args="-urdf -param cube_med_description -model med_cube -x -0.5 -y -1.0 -z 0.75" 
+      args="-urdf -param cube_med_description -model med_cube -x -0.5 -y -1.0 -z 0.755" 
       launch-prefix="bash -c 'sleep 5.0; $0 $@' "/>
 
 <param name="cube_small_description" 
        command="$(find xacro)/xacro '$(find ur10e_sim)/urdf/cube_spawner.urdf.xacro' name:=small_cube size:=0.05 mass:=0.1" />
 <node name="spawn_small_cube" pkg="gazebo_ros" type="spawn_model" 
-      args="-urdf -param cube_small_description -model small_cube -x 0.5 -y -1.0 -z 0.75" 
+      args="-urdf -param cube_small_description -model small_cube -x 0.5 -y -1.0 -z 0.755" 
       launch-prefix="bash -c 'sleep 5.0; $0 $@' "/-->
 </launch>
