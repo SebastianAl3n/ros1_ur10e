@@ -1,0 +1,37 @@
+<?xml version='1.0'?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="pallette_for_kuchen">
+
+<xacro:macro name="wooden_pallette" params="prefix">
+    <link name="${prefix}pallette">
+       <inertial>
+            <origin xyz="-1.6240976817373723e-16 0.0 0.027098214285714288" rpy="0.0 0.0 0.0" />
+            <mass value="28.13439999999999" />
+            <inertia ixx="0.5685217648809593" iyy="0.8224849648809531" izz="1.3392644266666744" ixy="-1.4621764421463013e-15" iyz="-2.2846506908535957e-17" ixz="2.1887769565052753e-16" />
+        </inertial>
+        <visual name="pallette_visual">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://ur10e_sim/meshes/pallette.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="pallette_collision">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://ur10e_sim/meshes/pallette.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <gazebo reference="${prefix}pallette">
+    <material>Gazebo/Wood</material> <visual>
+      <material>
+        <ambient>0.7 0.5 0.3 1</ambient>
+        <diffuse>0.8 0.6 0.4 1</diffuse>
+        <specular>0.2 0.2 0.2 1</specular>
+        <emissive>0 0 0 1</emissive>
+      </material>
+    </visual>
+  </gazebo>
+
+</xacro:macro>
+</robot>

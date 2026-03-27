@@ -6,6 +6,7 @@
   <xacro:include filename="$(find ur10e_sim)/urdf/table.urdf.xacro" />
   <xacro:include filename="$(find ur10e_sim)/urdf/tool_adapter_plate.xacro" />
   <xacro:include filename= "$(find ur10e_sim)/urdf/FT_sensor_urdf/net_ft_sensor_macro.urdf.xacro" />
+  <xacro:include filename="$(find ur10e_sim)/urdf/pallette.urdf.xacro" />
 
 
   <link name="world"/>
@@ -87,6 +88,14 @@
     <parent link="world"/> 
     <child link="left_table_base_link"/> 
     <origin xyz="0 -1 0" rpy="0 0 0"/>
+  </joint>
+
+  <xacro:wooden_pallette prefix=""/>
+  
+  <joint name="pallette_attachment" type="fixed">
+    <parent link="right_pallette_mount_link"/> 
+    <child link="pallette"/> 
+    <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
 
   
