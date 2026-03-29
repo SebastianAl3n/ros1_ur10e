@@ -27,7 +27,7 @@
 <param name="Lebkuchen"  command="$(find xacro)/xacro '$(find ur10e_sim)/urdf/lebkuchen.urdf.xacro'" />
 
 <node name="spawn_lebkuchen" pkg="gazebo_ros" type="spawn_model" 
-      args="-urdf -param Lebkuchen -model lebkuchen -x 0.0 -y -1.0 -z 0.758" 
+      args="-urdf -param Lebkuchen -model lebkuchen -x 0.277 -y -0.774 -z 0.758" 
       launch-prefix="bash -c 'sleep 5.0; $0 $@' "/>
  
  <!--spawn object for pick and place-->
