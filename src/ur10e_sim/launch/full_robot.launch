@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="paused" value="false"/>
+    <arg name="world_name" value="$(find ur10e_sim)/my_worlds/my_workarea.world"/>
     <arg name="use_sim_time" value="true"/>
     <arg name="gui" value="true"/>
   </include>
@@ -23,12 +23,15 @@
         output="screen" args="$(arg controllers)"/>
 
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen" />
+  
 
 <param name="Lebkuchen"  command="$(find xacro)/xacro '$(find ur10e_sim)/urdf/lebkuchen.urdf.xacro'" />
 
 <node name="spawn_lebkuchen" pkg="gazebo_ros" type="spawn_model" 
-      args="-urdf -param Lebkuchen -model lebkuchen -x 0.277 -y -0.774 -z 0.758" 
+      args="-urdf -param Lebkuchen -model lebkuchen -x 0.277 -y -0.75 -z 0.758" 
       launch-prefix="bash -c 'sleep 5.0; $0 $@' "/>
+
+
  
  <!--spawn object for pick and place-->
  <!--param name="can_description" command="$(find xacro)/xacro '$(find ur10e_sim)/urdf/coke_can.urdf.xacro'" />
