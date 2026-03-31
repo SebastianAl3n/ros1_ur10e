@@ -15,9 +15,11 @@ Prototype ROS/Gazebo simulation for a confectionery pick-and-place task.
 - Grasping not robust to pose variation
 - Could be improved with MoveIt pipeline + vacuum gripper model
 # ROS1_UR10e Workspace
-A ROS1 workspace for controlling the ur10e and OnRobot attachments
+A ROS1 workspace for controlling the ur10e and OnRobot attachments.
 Ensure the UR description package is installed and sourced
+```bash
 sudo apt install ros-noetic-ur-description
+```
 
 # Starting the simulation
 # source the workspace in each terminal
