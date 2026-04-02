@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="Complete_clamp_for_gripper" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:macro name="clamp_for_gripper" params="prefix">
+
+        <xacro:property name="mesh_scale" value="0.001 0.001 0.001" />
+
+        <link name="clamp_base_link">
+            <inertial>
+            <origin xyz="-0.011060583162827955 -3.366250655772788e-10 -0.012136260409283225" rpy="0.0 0.0 0.0" />
+            <mass value="0.30575626965147645" />
+            <inertia ixx="0.00037879660531933625" iyy="0.00036205172699990657" izz="0.0003912707284756461" 
+                    ixy="-4.266422535069116e-12" iyz="3.1017178950518987e-12" ixz="7.225893498166616e-05" />
+            </inertial>
+            <visual name="clamp_base_link_visual">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://ur10e_sim/meshes/clamp_base.stl" scale="${mesh_scale}" />
+            </geometry>
+            </visual>
+            <collision name="clamp_base_link_collision">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://ur10e_sim/meshes/clamp_base.stl" scale="${mesh_scale}" />
+            </geometry>
+            </collision>
+        </link>
+
+        <link name="clamp_stem_link">
+            <inertial>
+            <origin xyz="-3.469090496059752e-06 -0.0066938459160317135 0.06917939856504916" rpy="0.0 0.0 0.0" />
+            <mass value="0.7428084115002985" />
+            <inertia ixx="0.0010909012668391918" iyy="0.0008063393738401954" izz="0.00043902545071480164" 
+                    ixy="-2.7991521180854825e-08" iyz="0.000284898033075394" ixz="3.6070648423626296e-08" />
+            </inertial>
+            <visual name="clamp_stem_link_visual">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://ur10e_sim/meshes/clamp_stem.stl" scale="${mesh_scale}" />
+            </geometry>
+            </visual>
+            <collision name="clamp_stem_link_collision">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://ur10e_sim/meshes/clamp_stem.stl" scale="${mesh_scale}" />
+            </geometry>
+            </collision>
+        </link>
+
+        <joint name="clamp_base_joint" type="fixed">
+            <origin xyz="0.018 0.0 0.007" rpy="0.0 0.0 1.57" />
+            <parent link="clamp_base_link" />
+            <child link="clamp_stem_link" />
+        </joint>
+
+        <link name="camera_mount_link"/>
+        <joint name="camera_mount_joint" type="fixed">
+            <origin xyz="0.06947 0.0 0.08348" rpy="0.0 0.610865 0.0" />
+            <parent link="clamp_base_link" />
+            <child link="camera_mount_link" />
+        </joint>
+
+    </xacro:macro>
+
+</robot>

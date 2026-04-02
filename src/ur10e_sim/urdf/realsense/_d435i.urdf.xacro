@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!--
+License: Apache 2.0. See LICENSE file in root directory.
+Copyright(c) 2020 Intel Corporation. All Rights Reserved
+
+This is the URDF model for the Intel RealSense 435i camera, in it's
+aluminum peripherial evaluation case.
+-->
+
+<robot name="sensor_d435i" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find ur10e_sim)/urdf/realsense/_d435.urdf.xacro"/>
+  <xacro:include filename="$(find ur10e_sim)/urdf/realsense/_d435i_imu_modules.urdf.xacro"/>
+
+  <xacro:macro name="sensor_d435i" params="parent *origin name:=camera use_nominal_extrinsics:=false">
+    <xacro:sensor_d435 parent="${parent}" name="${name}" use_nominal_extrinsics="${use_nominal_extrinsics}">
+      <xacro:insert_block name="origin" />
+    </xacro:sensor_d435>
+    <xacro:d435i_imu_modules name="${name}" use_nominal_extrinsics="${use_nominal_extrinsics}"/>
+  </xacro:macro>
+
+  <gazebo reference="camera_link">
+    <visual>
+      <material>
+        <ambient>0.1 0.1 0.1 1</ambient>
+        <diffuse>0.1 0.1 0.1 1</diffuse>
+        <specular>0.5 0.5 0.5 1</specular>
+      </material>
+    </visual>
+  </gazebo>
+
+  <gazebo reference="camera_link">
+  <sensor type="depth" name="realsense_d435">
+    <always_on>true</always_on>
+    <update_rate>30.0</update_rate>
+    <camera>
+      <horizontal_fov>1.204</horizontal_fov> <image>
+        <width>640</width>
+        <height>480</height>
+        <format>R8G8B8</format>
+      </image>
+      <clip>
+        <near>0.05</near>
+        <far>8.0</far>
+      </clip>
+    </camera>
+    <plugin name="kinect_controller" filename="libgazebo_ros_openni_kinect.so">
+      <baseline>0.2</baseline>
+      <alwaysOn>true</alwaysOn>
+      <updateRate>30.0</updateRate>
+      <cameraName>camera</cameraName>
+      <imageTopicName>color/image_raw</imageTopicName>
+      <cameraInfoTopicName>color/camera_info</cameraInfoTopicName>
+      <depthImageTopicName>depth/image_raw</depthImageTopicName>
+      <depthImageInfoTopicName>depth/camera_info</depthImageInfoTopicName>
+      <pointCloudTopicName>depth/points</pointCloudTopicName>
+      <frameName>camera_color_optical_frame</frameName>
+      <pointCloudCutoff>0.5</pointCloudCutoff>
+      <pointCloudCutoffMax>3.0</pointCloudCutoffMax>
+      <distortionK1>0.00000001</distortionK1>
+      <distortionK2>0.00000001</distortionK2>
+      <distortionK3>0.00000001</distortionK3>
+      <distortionT1>0.00000001</distortionT1>
+      <distortionT2>0.00000001</distortionT2>
+      <CxPrime>0</CxPrime>
+      <Cx>0</Cx>
+      <Cy>0</Cy>
+      <focalLength>0</focalLength>
+      <hackBaseline>0</hackBaseline>
+    </plugin>
+  </sensor>
+</gazebo>
+
+</robot>
+

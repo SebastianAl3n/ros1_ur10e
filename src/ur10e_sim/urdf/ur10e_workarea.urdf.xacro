@@ -7,6 +7,10 @@
   <xacro:include filename="$(find ur10e_sim)/urdf/tool_adapter_plate.xacro" />
   <xacro:include filename= "$(find ur10e_sim)/urdf/FT_sensor_urdf/net_ft_sensor_macro.urdf.xacro" />
   <xacro:include filename="$(find ur10e_sim)/urdf/pallette.urdf.xacro" />
+  <xacro:include filename="$(find ur10e_sim)/urdf/clamp_for_gripper.urdf.xacro" />
+  <xacro:include filename="$(find ur10e_sim)/urdf/realsense/_d435i.urdf.xacro" />
+  <xacro:include filename="$(find ur10e_sim)/urdf/box.urdf.xacro" />
+
 
 
   <link name="world"/>
@@ -14,7 +18,7 @@
   <link name="floor_plate">
     <visual>
       <geometry>
-        <box size="1.0 1.0 0.1"/>
+        <box size="0.8 0.8 0.25"/>
         </geometry>
       <material name="grey">
         <color rgba="0.5 0.5 0.5 1.0"/>
@@ -22,7 +26,7 @@
     </visual>
     <collision>
       <geometry>
-        <box size="1.0 1.0 0.1"/>
+        <box size="0.8 0.8 0.25"/>
       </geometry>
     </collision>
     <inertial>
@@ -35,7 +39,7 @@
   <joint name="world_to_floor_plate" type="fixed">
     <parent link="world"/>
     <child link="floor_plate"/>
-    <origin xyz="0 0 0.05" rpy="0 0 0"/>
+    <origin xyz="0 0 0.125" rpy="0 0 0"/>
   </joint>
 
 
@@ -48,7 +52,7 @@
   />
   <joint name="table_to_robot" type="fixed">
     <parent link="floor_plate"/>
-    <child link="base_link"/> <origin xyz="0 0 0.05" rpy="0 0 0"/> 
+    <child link="base_link"/> <origin xyz="0 0 0.125" rpy="0 0 0"/> 
   </joint>
 
   <gazebo reference="table_to_robot">
@@ -76,6 +80,18 @@
     <origin xyz="0 0 0.15" rpy="0 0 0"/>
   </joint>
 
+  <xacro:clamp_for_gripper prefix=""/>
+  <joint name="clamp_attachment" type="fixed">
+    <parent link="tool0"/> 
+    <child link="clamp_base_link"/> 
+    <origin xyz="0 -0.018 0.17" rpy="1.57 -1.57 0"/>
+  </joint>
+
+  <xacro:sensor_d435i parent="camera_mount_link" name="camera" use_nominal_extrinsics="true">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:sensor_d435i>
+
+
   <xacro:wooden_table prefix="right_"/>
   <joint name="right_table_attachment" type="fixed">
     <parent link="world"/> 
@@ -93,10 +109,22 @@
   <xacro:wooden_pallette prefix=""/>
   
   <joint name="pallette_attachment" type="fixed">
-    <parent link="right_pallette_mount_link"/> 
+    <parent link="right_table_mount_link"/> 
     <child link="pallette"/> 
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
+
+  <xacro:table_accessories prefix=""/>
+  <joint name="pedestal_attachment" type="fixed">
+    <parent link="left_table_mount_link"/> 
+    <child link="pedestal_link"/> 
+    <origin xyz="0 0 0.0" rpy="0 0 0"/>
+  </joint>
+
+
+  <gazebo>
+  <disable_collision link1="onrobot_rg2_base_link" link2="clamp_base_link" />
+  </gazebo>
 
 
 
@@ -110,6 +138,7 @@
   <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
     <robotNamespace>/</robotNamespace>
     <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+    <legacyModeNS>false</legacyModeNS>
   </plugin>
 </gazebo>
 

@@ -47,4 +47,29 @@
     <disable_collisions link1="wrist_1_link" link2="wrist_2_link" reason="User"/>
     <disable_collisions link1="left_table_top" link2="pallette" reason="User"/>
     <disable_collisions link1="pallette" link2="right_table_top" reason="User"/>
+    <disable_collisions link1="clamp_base_link" link2="clamp_stem_link" reason="User"/>
+    <disable_collisions link1="clamp_base_link" link2="onrobot_rg2_base_link" reason="User"/>
+    <disable_collisions link1="clamp_base_link" link2="wrist_2_link" reason="User"/>
+    <disable_collisions link1="clamp_base_link" link2="wrist_3_link" reason="User"/>
+    <disable_collisions link1="clamp_stem_link" link2="wrist_2_link" reason="User"/>
+    <disable_collisions link1="clamp_stem_link" link2="wrist_3_link" reason="User"/>
+    <disable_collisions link1="clamp_stem_link" link2="fts_link" reason="User"/>
+    <disable_collisions link1="adapter_plate_link" link2="clamp_stem_link" reason="User"/>
+    <disable_collisions link1="adapter_plate_link" link2="clamp_base_link" reason="User"/>
+    <disable_collisions link1="clamp_base_link" link2="fts_link" reason="User"/>
+    <disable_collisions link1="clamp_base_link" link2="left_outer_knuckle" reason="User"/>
+    <disable_collisions link1="clamp_base_link" link2="left_inner_finger" reason="User"/>
+    <disable_collisions link1="clamp_base_link" link2="left_inner_knuckle" reason="User"/>
+    <disable_collisions link1="clamp_base_link" link2="right_inner_knuckle" reason="User"/>
+    <disable_collisions link1="clamp_base_link" link2="right_inner_finger" reason="User"/>
+    <disable_collisions link1="clamp_base_link" link2="right_outer_knuckle" reason="User"/>
+    <disable_collisions link1="clamp_stem_link" link2="right_inner_finger" reason="User"/>
+    <disable_collisions link1="clamp_stem_link" link2="right_outer_knuckle" reason="User"/>
+    <disable_collisions link1="clamp_stem_link" link2="right_inner_knuckle" reason="User"/>
+    <disable_collisions link1="clamp_stem_link" link2="left_inner_knuckle" reason="User"/>
+    <disable_collisions link1="clamp_stem_link" link2="left_inner_finger" reason="User"/>
+    <disable_collisions link1="clamp_stem_link" link2="left_outer_knuckle" reason="User"/>
+    <disable_collisions link1="clamp_stem_link" link2="onrobot_rg2_base_link" reason="User"/>
+    <disable_collisions link1="camera_link" link2="clamp_base_link" reason="User"/>
+    <disable_collisions link1="camera_link" link2="clamp_stem_link" reason="User"/>
 </robot>
