@@ -19,6 +19,7 @@ class ColorDetector:
 
         self.image_sub = rospy.Subscriber("/camera/color/image_raw", Image, self.callback)
         self.depth_sub = rospy.Subscriber("/camera/depth/image_raw",Image,self.depth_callback)
+        self.mask_pub = rospy.Publisher("/camera/green_mask", Image, queue_size=1)
 
         self.tf_buffer = tf2_ros.Buffer()
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
@@ -26,7 +27,26 @@ class ColorDetector:
 
     def callback(self, data):
         try:
-            self.current_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+            cv_img = self.bridge.imgmsg_to_cv2(data, "bgr8")
+            self.current_image = cv_img.copy() 
+            
+            hsv = cv2.cvtColor(cv_img, cv2.COLOR_BGR2HSV)
+            mask = cv2.inRange(hsv, self.lower_green, self.upper_green)
+            contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+            # Draw Bounding box for visualization
+            if contours:
+                largest = max(contours, key=cv2.contourArea)
+                if cv2.contourArea(largest) > 100:
+                    x, y, w, h = cv2.boundingRect(largest)
+                    cv2.rectangle(cv_img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                    cv2.circle(cv_img, (x + w//2, y + h//2), 5, (0, 0, 255), -1)
+
+            self.annotated_image = cv_img
+            cv2.imshow("Robot Live View", self.annotated_image)
+            cv2.waitKey(1)
+            
+
         except Exception as e:
             rospy.logerr(f"Error converting image: {e}")
 
@@ -43,6 +63,7 @@ class ColorDetector:
         hsv_img = cv2.cvtColor(self.current_image, cv2.COLOR_BGR2HSV)
         mask = cv2.inRange(hsv_img, self.lower_green, self.upper_green)
         contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
         bbox = None
         if contours:
             largest_contour = max(contours, key=cv2.contourArea)
@@ -54,9 +75,9 @@ class ColorDetector:
                 
                 bbox = (x, y, w, h)
 
-        cv2.imshow("Robot View", self.current_image) 
-        cv2.imshow("Green Mask (What the robot thinks is green)", mask)
-        cv2.waitKey(1)
+        #cv2.imshow("Robot View", self.current_image) 
+        #cv2.imshow("Green Mask (What the robot thinks is green)", mask)
+        #cv2.waitKey(1)
         
         return bbox
     
@@ -99,6 +120,19 @@ class ColorDetector:
         except Exception as e:
             rospy.logerr(f"transformation failed: {e}")
             return None
+    
+    def extract_pose(self):
+        """function to run the whole vision pipeline in one call"""
+        bbox = self.detect_green()
+        if bbox:
+            x, y, w, h = bbox
+            cx, cy = x + (w // 2), y + (h // 2)
+
+            pose_cam = self.get_3d_pose(cx, cy)
+            if pose_cam:
+                return self.get_world_pose(*pose_cam)
+        
+        return None
 
 
 

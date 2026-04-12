@@ -28,11 +28,11 @@ class RobotControl(object):
         
         rospy.sleep(2)  
 
-    def gazebo_attach(self):       #attaching the Lebkuchen in Gazebo 
+    def gazebo_attach(self):       #attaching the object in Gazebo 
         req = AttachRequest()
         req.model_name_1 = "robot"
         req.link_name_1 = "wrist_3_link" 
-        req.model_name_2 = "lebkuchen"
+        req.model_name_2 = "object"
         req.link_name_2 = "package_link"
         
         res = self.attach_srv.call(req)
@@ -42,42 +42,42 @@ class RobotControl(object):
         req = AttachRequest()
         req.model_name_1 = "robot"
         req.link_name_1 = "wrist_3_link"
-        req.model_name_2 = "lebkuchen"
+        req.model_name_2 = "object"
         req.link_name_2 = "package_link"
         
         res = self.detach_srv.call(req)
         return res
 
-    def lebkuchen_collision(self):      #adding the lebkuchen in moveit planning scene
-        kuchen_pose = geometry_msgs.msg.PoseStamped()
-        kuchen_pose.header.frame_id = "world"
-        kuchen_pose.pose.position.x = 0.277
-        kuchen_pose.pose.position.y = -0.75
-        kuchen_pose.pose.position.z = 0.858
-        kuchen_pose.pose.orientation.w = 1.0
+    def object_collision(self):      #adding the object in moveit planning scene
+        object_pose = geometry_msgs.msg.PoseStamped()
+        object_pose.header.frame_id = "world"
+        object_pose.pose.position.x = 0.0
+        object_pose.pose.position.y = -1.0
+        object_pose.pose.position.z = 0.97
+        object_pose.pose.orientation.w = 1.0
 
-        self.scene.add_box("lebkuchen", kuchen_pose, size=(0.08, 0.1, 0.075))
+        self.scene.add_box("object", object_pose, size=(0.08, 0.1, 0.075))
 
 
-    def attach_lebkuchen(self):
+    def attach_object(self):
         gripper_links = [
             "onrobot_rg2_base_link", "left_outer_knuckle", "right_outer_knuckle",
             "left_inner_knuckle", "right_inner_knuckle",
             "left_inner_finger", "right_inner_finger"
         ]
-        self.scene.attach_box("onrobot_rg2_base_link", "lebkuchen", touch_links=gripper_links)  # This tells MoveIt the lebkuchen moves with the robot now
+        self.scene.attach_box("onrobot_rg2_base_link", "object", touch_links=gripper_links)  # This tells MoveIt the object moves with the robot now
         self.gazebo_attach()
-        rospy.loginfo("Lebkuchen attached to gripper.")
+        rospy.loginfo("object attached to gripper.")
 
-    def detach_lebkuchen(self):
+    def detach_object(self):
         """Call this to release the object physically and mentally"""
         self.gazebo_detach()
         
-        self.scene.remove_attached_object("onrobot_rg2_base_link", "lebkuchen")
+        self.scene.remove_attached_object("onrobot_rg2_base_link", "object")
         
-        self.scene.remove_world_object("lebkuchen") 
+        self.scene.remove_world_object("object") 
         
-        rospy.loginfo("Lebkuchen detached and released.")
+        rospy.loginfo("object detached and released.")
 
     def go_to_joints(self, joint_goal): # path planning using joint angles (less precise, but often more reliable)
         self.arm_group.set_joint_value_target(joint_goal)
