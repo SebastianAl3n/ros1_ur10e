@@ -56,7 +56,7 @@ class RobotControl(object):
         object_pose.pose.position.z = 0.97
         object_pose.pose.orientation.w = 1.0
 
-        self.scene.add_box("object", object_pose, size=(0.08, 0.1, 0.075))
+        self.scene.add_box("object", object_pose, size=(0.1, 0.1, 0.1))
 
 
     def attach_object(self):
@@ -120,6 +120,16 @@ class RobotControl(object):
         else:
             rospy.logerr("Cartesian path planning failed!")
             return False
+    
+    def go_to_position_only(self, x, y, z):
+        # This tells MoveIt! to ONLY care about the XYZ
+        self.arm_group.set_position_target([x, y, z])
+        success = self.arm_group.go(wait=True)
+        self.arm_group.stop()
+        self.arm_group.clear_pose_targets()
+        return success
+
+        
 
     def gripper_control(self, value):
         self.gripper_group.set_joint_value_target([value])

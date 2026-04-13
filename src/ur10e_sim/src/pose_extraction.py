@@ -32,7 +32,7 @@ class ColorDetector:
             
             hsv = cv2.cvtColor(cv_img, cv2.COLOR_BGR2HSV)
             mask = cv2.inRange(hsv, self.lower_green, self.upper_green)
-            contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+            contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
             # Draw Bounding box for visualization
             if contours:

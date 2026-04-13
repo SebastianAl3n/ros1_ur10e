@@ -1,6 +1,6 @@
 # Lebkuchen Pick-and-Place Simulation
 
-![Lebkuchen Side-Pick Simulation](img/simulation.png)
+![Vision Based Pick and Place](img/simulation.png)
 
 ## Overview
 Prototype ROS/Gazebo simulation for a confectionery pick-and-place task.
