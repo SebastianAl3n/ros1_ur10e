@@ -27,7 +27,7 @@
 
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen" />
   
-<param name = "cube" command="$(find xacro)/xacro '$(find ur10e_sim)/urdf/cube_spawner.urdf.xacro' name:=cube size:=0.1"/>
+<param name = "cube" command="$(find xacro)/xacro '$(find ur10e_sim)/urdf/cube_spawner.urdf.xacro' name:=cube size:=0.08"/>
    <node name="spawn_cube" pkg="gazebo_ros" type="spawn_model" 
         args="-urdf -param cube -model my_cube -x 0.0 -y -1.0 -z 0.97" 
         launch-prefix="bash -c 'sleep 5.0; $0 $@' " />

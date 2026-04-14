@@ -14,8 +14,9 @@ def main():
     
 
     rospy.loginfo("Moving to scanning position...")
-    start_joints = [-3.579, -1.630, 0.06, 0.994, -0.676, -2.625]
+    start_joints = [-1.954,-1.920,0.949,-5.330,1.275,-3.181]
     robot.go_to_joints(start_joints)
+   
 
 
     target_pose = vision.extract_pose()
@@ -27,8 +28,12 @@ def main():
         rospy.loginfo(f"Success..found object at World Frame X={world_x:.3f}m, Y={world_y:.3f}m, Z={world_z:.3f}m")
 
         rospy.loginfo(f"Moving to pickup pose")
-        robot.go_to_pose(world_x,world_y,world_z+0.19,3.045,1.501,1.477)
-    
+        robot.go_to_pose(world_x-0.02,world_y+0.1,world_z-0.05,-1.351, 1.533, -2.935)
+        rospy.loginfo("gripper opening")
+        robot.gripper_control(-0.39)
+        robot.move_linear(0,-0.06,0)
+        robot.gripper_control(-0.19)
+
     else:
         rospy.loginfo(f"No Pose was found")
     

@@ -56,7 +56,7 @@ class RobotControl(object):
         object_pose.pose.position.z = 0.97
         object_pose.pose.orientation.w = 1.0
 
-        self.scene.add_box("object", object_pose, size=(0.1, 0.1, 0.1))
+        self.scene.add_box("object", object_pose, size=(0.06, 0.06, 0.06))
 
 
     def attach_object(self):
@@ -131,6 +131,6 @@ class RobotControl(object):
 
         
 
-    def gripper_control(self, value):
+    def gripper_control(self, value): #-0.4 to open fully
         self.gripper_group.set_joint_value_target([value])
         self.gripper_group.go(wait=True)

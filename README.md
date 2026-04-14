@@ -1,9 +1,9 @@
-# Lebkuchen Pick-and-Place Simulation
+# Vision based Pick-and-Place Simulation
 
 ![Vision Based Pick and Place](img/simulation.png)
 
 ## Overview
-Prototype ROS/Gazebo simulation for a confectionery pick-and-place task.
+Prototype ROS/Gazebo simulation using HSV colour space.
 
 ## Features
 - Basic motion planning (joint + Cartesian)
