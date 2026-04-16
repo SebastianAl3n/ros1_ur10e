@@ -12,17 +12,19 @@ from geometry_msgs.msg import PointStamped
 class ColorDetector:
     def __init__(self):
         self.bridge = CvBridge()
-        self.lower_green = np.array([35, 10, 10])
-        self.upper_green = np.array([85, 255, 255])
+        self.lower_color = np.array([90, 50, 50])
+        self.upper_color = np.array([130, 255, 255])
         self.current_image = None
         self.current_depth = None
+        self.status = "INITIALIZING"
 
         self.image_sub = rospy.Subscriber("/camera/color/image_raw", Image, self.callback)
         self.depth_sub = rospy.Subscriber("/camera/depth/image_raw",Image,self.depth_callback)
-        self.mask_pub = rospy.Publisher("/camera/green_mask", Image, queue_size=1)
+        self.mask_pub = rospy.Publisher("/camera/color_mask", Image, queue_size=1)
 
         self.tf_buffer = tf2_ros.Buffer()
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
+        
         rospy.sleep(1.0)
 
     def callback(self, data):
@@ -31,19 +33,29 @@ class ColorDetector:
             self.current_image = cv_img.copy() 
             
             hsv = cv2.cvtColor(cv_img, cv2.COLOR_BGR2HSV)
-            mask = cv2.inRange(hsv, self.lower_green, self.upper_green)
+            mask = cv2.inRange(hsv, self.lower_color, self.upper_color)
             contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+            color_map = {"SCANNING": (0, 255, 255), "TARGET LOCKED": (0, 255, 0), "MOVING": (255, 150, 0)}
+            text_color = color_map.get(self.status, (255, 255, 255))
+
+            cv2.putText(cv_img, f"SYSTEM: {self.status}", (20, 40), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, text_color, 2)
 
             # Draw Bounding box for visualization
             if contours:
                 largest = max(contours, key=cv2.contourArea)
                 if cv2.contourArea(largest) > 100:
                     x, y, w, h = cv2.boundingRect(largest)
+                    cx, cy = x + w//2, y + h//2
                     cv2.rectangle(cv_img, (x, y), (x + w, y + h), (0, 255, 0), 2)
                     cv2.circle(cv_img, (x + w//2, y + h//2), 5, (0, 0, 255), -1)
+                    cv2.putText(cv_img, f"X:{cx} Y:{cy}", (x, y + h + 20), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
 
             self.annotated_image = cv_img
-            cv2.imshow("Robot Live View", self.annotated_image)
+            small = cv2.resize(cv_img, (420, 340))
+            cv2.imshow("Robot Live View", small)
             cv2.waitKey(1)
             
 
@@ -56,12 +68,12 @@ class ColorDetector:
         except Exception as e:
             rospy.logerr(f"Error converting image: {e}")
     
-    def detect_green(self):
+    def detect_color(self):
         if self.current_image is None:
             return None
 
         hsv_img = cv2.cvtColor(self.current_image, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(hsv_img, self.lower_green, self.upper_green)
+        mask = cv2.inRange(hsv_img, self.lower_color, self.upper_color)
         contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
         bbox = None
@@ -76,7 +88,7 @@ class ColorDetector:
                 bbox = (x, y, w, h)
 
         #cv2.imshow("Robot View", self.current_image) 
-        #cv2.imshow("Green Mask (What the robot thinks is green)", mask)
+        #cv2.imshow("color Mask (What the robot thinks is color)", mask)
         #cv2.waitKey(1)
         
         return bbox
@@ -123,7 +135,8 @@ class ColorDetector:
     
     def extract_pose(self):
         """function to run the whole vision pipeline in one call"""
-        bbox = self.detect_green()
+        self.status = "Object Found"
+        bbox = self.detect_color()
         if bbox:
             x, y, w, h = bbox
             cx, cy = x + (w // 2), y + (h // 2)
@@ -155,15 +168,15 @@ if __name__ == "__main__":
         rospy.sleep(2.0)
 
         # 5. Call the detection method and capture the result
-        rospy.loginfo("Scanning for green objects...")
-        bbox = vision.detect_green()
+        rospy.loginfo("Scanning for color objects...")
+        bbox = vision.detect_color()
 
         # 6. Act based on the result
         if bbox:
             x, y, w, h = bbox
             center_x = x + (w // 2)
             center_y = y + (h // 2)
-            rospy.loginfo(f"SUCCESS: Found green object at Center ({center_x}, {center_y})")
+            rospy.loginfo(f"SUCCESS: Found color object at Center ({center_x}, {center_y})")
 
             pose_cam = vision.get_3d_pose(center_x,center_y)
 
@@ -187,7 +200,7 @@ if __name__ == "__main__":
             
             # This is where you'd add: robot.go_to_pose(...) to grab it!
         else:
-            rospy.logwarn("FAILED: No green object detected. Check lighting or HSV values.")
+            rospy.logwarn("FAILED: No color object detected. Check lighting or HSV values.")
 
         # 7. Keep windows alive so you can inspect the Mask
         if vision.current_image is not None:

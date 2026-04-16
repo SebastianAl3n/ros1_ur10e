@@ -21,8 +21,17 @@
   </link>
 
   <gazebo reference="$(arg name)_link">
-    <material>Gazebo/Green</material>
-    
+  <material>Gazebo/Green</material> 
+  
+  <visual>
+    <material>
+      <ambient>0.2 0.3 0.6 1</ambient>
+      <diffuse>0.3 0.5 1.0 1</diffuse>
+      <specular>0.4 0.4 0.4 1</specular>
+      <emissive>0 0 0 1</emissive>
+    </material>
+  </visual>
+  
     <mu1>10.0</mu1>
     <mu2>10.0</mu2>
     <minDepth>0.001</minDepth>

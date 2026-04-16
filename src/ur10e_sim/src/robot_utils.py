@@ -16,8 +16,8 @@ class RobotControl(object):
         self.gripper_group = moveit_commander.MoveGroupCommander("gripper_group")
 
         self.arm_group.set_goal_position_tolerance(0.005)
-        self.arm_group.set_goal_orientation_tolerance(0.01)
-        self.arm_group.set_planning_time(6.0)
+        self.arm_group.set_goal_orientation_tolerance(0.1)
+        self.arm_group.set_planning_time(10.0)
 
         rospy.loginfo("Connecting to Gazebo Link Attacher...")
         self.attach_srv = rospy.ServiceProxy('/link_attacher_node/attach',Attach)
@@ -32,8 +32,8 @@ class RobotControl(object):
         req = AttachRequest()
         req.model_name_1 = "robot"
         req.link_name_1 = "wrist_3_link" 
-        req.model_name_2 = "object"
-        req.link_name_2 = "package_link"
+        req.model_name_2 = "my_cube"
+        req.link_name_2 = "cube_link"
         
         res = self.attach_srv.call(req)
         return res
@@ -42,21 +42,21 @@ class RobotControl(object):
         req = AttachRequest()
         req.model_name_1 = "robot"
         req.link_name_1 = "wrist_3_link"
-        req.model_name_2 = "object"
-        req.link_name_2 = "package_link"
+        req.model_name_2 = "my_cube"
+        req.link_name_2 = "cube_link"
         
         res = self.detach_srv.call(req)
         return res
 
     def object_collision(self):      #adding the object in moveit planning scene
-        object_pose = geometry_msgs.msg.PoseStamped()
-        object_pose.header.frame_id = "world"
-        object_pose.pose.position.x = 0.0
-        object_pose.pose.position.y = -1.0
-        object_pose.pose.position.z = 0.97
-        object_pose.pose.orientation.w = 1.0
+        cube_pose = geometry_msgs.msg.PoseStamped()
+        cube_pose.header.frame_id = "world"
+        cube_pose.pose.position.x = 0.0
+        cube_pose.pose.position.y = -1.0
+        cube_pose.pose.position.z = 0.97
+        cube_pose.pose.orientation.w = 1.0
 
-        self.scene.add_box("object", object_pose, size=(0.06, 0.06, 0.06))
+        self.scene.add_box("object", cube_pose, size=(0.06, 0.06, 0.06))
 
 
     def attach_object(self):
@@ -70,7 +70,6 @@ class RobotControl(object):
         rospy.loginfo("object attached to gripper.")
 
     def detach_object(self):
-        """Call this to release the object physically and mentally"""
         self.gazebo_detach()
         
         self.scene.remove_attached_object("onrobot_rg2_base_link", "object")
@@ -85,7 +84,7 @@ class RobotControl(object):
         self.arm_group.stop()
         return success
 
-    def go_to_pose(self, x, y, z, roll, pitch, yaw): # path planning using euler angles
+    def pose_in_quaternion( self, x, y, z, roll, pitch, yaw):
         pose_target = geometry_msgs.msg.Pose()
         q = quaternion_from_euler(roll, pitch, yaw)
         pose_target.orientation.x = q[0]
@@ -95,7 +94,12 @@ class RobotControl(object):
         pose_target.position.x = x
         pose_target.position.y = y
         pose_target.position.z = z
-        
+
+        return pose_target
+
+    def go_to_pose(self, x, y, z, roll, pitch, yaw): # path planning using euler angles
+ 
+        pose_target = self.pose_in_quaternion(x, y, z, roll, pitch, yaw)
         self.arm_group.set_pose_target(pose_target)
         success = self.arm_group.go(wait=True)
         self.arm_group.stop()
@@ -121,6 +125,43 @@ class RobotControl(object):
             rospy.logerr("Cartesian path planning failed!")
             return False
     
+    def go_to_pose_multi_planner(self, x, y, z, roll, pitch, yaw):
+        pose_target = geometry_msgs.msg.Pose()
+        q = quaternion_from_euler(roll, pitch, yaw)
+
+        pose_target.orientation.x = q[0]
+        pose_target.orientation.y = q[1]
+        pose_target.orientation.z = q[2]
+        pose_target.orientation.w = q[3]
+        pose_target.position.x = x
+        pose_target.position.y = y
+        pose_target.position.z = z
+
+        planners = [
+            ("RRTConnectkConfigDefault", 5.0),
+            ("PTP", 3.0)   # Pilz planner
+        ]
+
+        for planner_id, planning_time in planners:
+            rospy.loginfo(f"Trying planner: {planner_id}")
+            
+            self.arm_group.set_planner_id(planner_id)
+            self.arm_group.set_planning_time(planning_time)
+            self.arm_group.set_pose_target(pose_target)
+
+            success = self.arm_group.go(wait=True)
+            self.arm_group.stop()
+            self.arm_group.clear_pose_targets()
+
+            if success:
+                rospy.loginfo(f"Success with planner: {planner_id}")
+                return True
+            else:
+                rospy.logwarn(f"Planner {planner_id} failed, trying next...")
+
+        rospy.logerr("All planners failed!")
+        return False
+    
     def go_to_position_only(self, x, y, z):
         # This tells MoveIt! to ONLY care about the XYZ
         self.arm_group.set_position_target([x, y, z])
@@ -128,7 +169,20 @@ class RobotControl(object):
         self.arm_group.stop()
         self.arm_group.clear_pose_targets()
         return success
+    
+    def go_to_pose_pilz(self,x,y,z,roll,pitch,yaw):
+        rospy.loginfo("Planer changed to Pilz LIN")
+        self.arm_group.set_planning_pipeline_id("pilz_industrial_motion_planner")
+        self.arm_group.set_planner_id("LIN")
+        self.arm_group.set_max_velocity_scaling_factor(0.1)
+        self.arm_group.set_max_acceleration_scaling_factor(0.1)
+        pose_target = self.pose_in_quaternion(x,y,z,roll,pitch,yaw)
 
+        self.arm_group.set_pose_target(pose_target)
+        success = self.arm_group.go(wait=True)
+        self.arm_group.stop()
+        self.arm_group.clear_pose_targets()
+        return success
         
 
     def gripper_control(self, value): #-0.4 to open fully
