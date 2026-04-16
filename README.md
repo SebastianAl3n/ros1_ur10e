@@ -9,7 +9,7 @@ Prototype ROS/Gazebo simulation using HSV colour space.
 - Vision-based object detection using HSV color space
 - 2D to 3D pose estimation using RGB-D data
 - Coordinate transformation from camera frame to world frame
-- Basic motion planning (joint + Cartesian)
+- Implementation of different motion planners - RRT Connect (OMPL), LIN (Pilz)
 - Grasping via Gazebo link attacher
 - Simplified industrial pick-and-place workflow
 
@@ -20,8 +20,8 @@ Prototype ROS/Gazebo simulation using HSV colour space.
 - No semantic understanding of objects (only color-based detection is used).
 - Replace HSV-based segmentation with learning-based object detection (e.g., YOLO) for improved robustness.
 # ROS1_UR10e Workspace
-A ROS1 workspace for controlling the ur10e cobot with paired together with a RGBD sensor.
-Ensure the UR description package is installed and sourced
+A ROS1 workspace for simulating a UR10e cobot together with HEX FT-sensor and an RGBD camera
+Ensure the UR-description package is installed and sourced
 ```bash
 sudo apt install ros-noetic-ur-description
 ```
