@@ -3,7 +3,7 @@
 ![Vision Based Pick and Place](img/simulation.png)
 
 ## Overview
-Prototype ROS/Gazebo simulation using HSV colour space.
+A ROS1 workspace for simulating a UR10e cobot together with HEX FT-sensor and an RGBD camera
 
 ## Features
 - Vision-based object detection using HSV color space
@@ -20,7 +20,6 @@ Prototype ROS/Gazebo simulation using HSV colour space.
 - No semantic understanding of objects (only color-based detection is used).
 - Replace HSV-based segmentation with learning-based object detection (e.g., YOLO) for improved robustness.
 # ROS1_UR10e Workspace
-A ROS1 workspace for simulating a UR10e cobot together with HEX FT-sensor and an RGBD camera
 Ensure the UR-description package is installed and sourced
 ```bash
 sudo apt install ros-noetic-ur-description
